@@ -1,0 +1,285 @@
+<html>
+<head>
+  <base href="https://websim.ai" />
+  <title>Digital Detective Cases</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #1a1f3c, #2a4858);
+      min-height: 100vh;
+      color: white;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+      margin-bottom: 30px;
+    }
+
+    .intro {
+      font-size: 18px;
+      text-align: center;
+      color: #00ffff;
+      margin-bottom: 40px;
+    }
+
+    .case-select {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .case-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .case-card:hover {
+      background: rgba(0, 255, 255, 0.2);
+      transform: translateY(-5px);
+    }
+
+    .game-area {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    .item {
+      padding: 15px;
+      margin: 10px 0;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .item:hover {
+      background: rgba(0, 255, 255, 0.1);
+    }
+
+    .selected {
+      background: #00ffff !important;
+      color: black;
+    }
+
+    .success-message {
+      padding: 20px;
+      background: rgba(0, 255, 0, 0.2);
+      border-radius: 10px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    button {
+      background: #00ffff;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background: #00cccc;
+      box-shadow: 0 0 15px #00ffff;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .section-title {
+      font-size: 22px;
+      text-align: center;
+      color: #00ffff;
+      margin-bottom: 20px;
+    }
+
+    .section-content {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #dddddd;
+    }
+
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1>Digital Detective Cases</h1>
+
+    <!-- Welcome Section -->
+    <div class="section-title">Welcome to Digital Detective!</div>
+    <div class="section-content">
+      <p>Welcome, Detective! You are about to embark on an exciting journey where you will solve challenging digital forensic cases. This game will test your analytical skills, knowledge of cybersecurity, and your ability to make critical decisions. Are you ready to take on the challenge?</p>
+    </div>
+
+    <!-- Purpose Section -->
+    <div class="section-title">Purpose of the Game</div>
+    <div class="section-content">
+      <p>The purpose of this game is to introduce you to the world of digital forensics. By solving cases involving file recovery, disk imaging, and network traffic analysis, you'll gain hands-on experience with critical forensic tools and techniques used in real-world investigations.</p>
+    </div>
+
+    <!-- Rewards Section -->
+    <div class="section-title">Rewards</div>
+    <div class="section-content">
+      <p>As you progress through the cases, you'll unlock achievements and knowledge that could help you in real-life digital forensic investigations. Every solved case adds to your experience and sharpens your detective skills!</p>
+    </div>
+
+    <!-- Court Case Section -->
+    <div class="section-title">Will the Case Go to Court?</div>
+    <div class="section-content">
+      <p>Each case will be simulated in a way that mirrors real-world legal scenarios. Some cases might make it to court depending on the evidence, while others may be resolved through internal processes. It's your job to gather the right evidence and solve the case!</p>
+    </div>
+
+    <!-- Case Select -->
+    <div id="caseSelect" class="case-select">
+      <div class="case-card" onclick="startCase(1)">
+        <h3>Case 1</h3>
+        <p>File Recovery Challenge</p>
+      </div>
+      <div class="case-card" onclick="startCase(2)">
+        <h3>Case 2</h3>
+        <p>Disk Imaging Simulation</p>
+      </div>
+      <div class="case-card" onclick="startCase(3)">
+        <h3>Case 3</h3>
+        <p>Network Traffic Analysis</p>
+      </div>
+    </div>
+
+    <div id="gameArea" class="game-area hidden">
+      <h2 id="caseTitle"></h2>
+      <p id="caseDescription"></p>
+      <div id="challengeContent"></div>
+      <div id="successMessage" class="success-message"></div>
+      <button id="submitButton" onclick="checkAnswer()">Submit</button>
+      <button id="backButton" onclick="goBack()" class="hidden">Back to Cases</button>
+    </div>
+  </div>
+
+  <script>
+    const cases = {
+      1: {
+        title: "File Recovery Challenge",
+        description: "Match the deleted files with their correct file signatures to recover them. This case can go to court if the evidence is solid.",
+        content: [
+          { file: "mysterious_image.jpg", signature: "FFD8FF", correct: true },
+          { file: "hidden_document.pdf", signature: "25504446", correct: false },
+          { file: "secret_archive.zip", signature: "504B0304", correct: false }
+        ],
+        successMessage: "File recovered successfully! You've learned how file signatures work."
+      },
+      2: {
+        title: "Disk Imaging Simulation",
+        description: "Select the correct drive to image based on the provided clues. This case can go to court if the imaging is done correctly. <img src='disk_image.png' alt='Disk Image Clue' style='width:100%;'/>",
+        content: [
+          { drive: "Drive A", size: "500GB", modified: "2023-06-15", suspicious: true, correct: false },
+          { drive: "Drive B", size: "1TB", modified: "2023-06-01", suspicious: false, correct: true },
+          { drive: "Drive C", size: "250GB", modified: "2023-06-10", suspicious: false, correct: false }
+        ],
+        successMessage: "Image created successfully! You've learned the importance of disk imaging."
+      },
+      3: {
+        title: "Network Traffic Analysis",
+        description: "Identify suspicious network packets that could be part of a phishing attack. This case can go to court if the evidence is compelling.",
+        content: [
+          { packet: "TCP 192.168.1.100:443", destination: "legitimate-bank.com", suspicious: false, correct: false },
+          { packet: "TCP 192.168.1.100:80", destination: "bank-secure-login.xyz", suspicious: true, correct: true },
+          { packet: "UDP 192.168.1.100:53", destination: "dns-server.com", suspicious: false, correct: false }
+        ],
+        successMessage: "Suspicious packet identified! You now know how to recognize phishing attempts."
+      }
+    };
+
+    let currentCase = null;
+    let selectedItems = new Set();
+
+    function startCase(caseNumber) {
+      currentCase = caseNumber;
+      document.getElementById('caseSelect').classList.add('hidden');
+      document.getElementById('gameArea').classList.remove('hidden');
+      document.getElementById('backButton').classList.remove('hidden');
+      
+      const caseData = cases[caseNumber];
+      document.getElementById('caseTitle').textContent = caseData.title;
+      document.getElementById('caseDescription').innerHTML = caseData.description;
+      
+      renderCaseContent(caseData);
+    }
+
+    function renderCaseContent(caseData) {
+      const container = document.getElementById('challengeContent');
+      container.innerHTML = '';
+      
+      caseData.content.forEach((item, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+        itemDiv.textContent = `${item.file || item.drive || item.packet}`;
+        itemDiv.onclick = () => toggleSelection(index);
+        container.appendChild(itemDiv);
+      });
+    }
+
+    function toggleSelection(index) {
+      const items = document.querySelectorAll('.item');
+      items[index].classList.toggle('selected');
+      if (selectedItems.has(index)) {
+        selectedItems.delete(index);
+      } else {
+        selectedItems.add(index);
+      }
+    }
+
+    function checkAnswer() {
+      const caseData = cases[currentCase];
+      let correctAnswers = 0;
+      
+      selectedItems.forEach(itemIndex => {
+        if (caseData.content[itemIndex].correct === true) {
+          correctAnswers++;
+        }
+      });
+
+      const successMessage = document.getElementById('successMessage');
+      if (correctAnswers > 0) {
+        successMessage.textContent = caseData.successMessage;
+        successMessage.style.display = 'block';
+      } else {
+        successMessage.textContent = 'No correct items selected, try again!';
+        successMessage.style.display = 'block';
+      }
+    }
+
+    function goBack() {
+      document.getElementById('gameArea').classList.add('hidden');
+      document.getElementById('caseSelect').classList.remove('hidden');
+      document.getElementById('backButton').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
+
+
